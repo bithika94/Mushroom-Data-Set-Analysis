@@ -1,0 +1,57 @@
+---
+title: "MyScript"
+author: "Bithika"
+date: "June 3, 2018"
+output:
+  word_document: default
+  html_document: default
+---
+```{r}
+#Reading the dataset
+mushroom <- read.csv("C:/Users/bithi/OneDrive/Documents/Stats with R/mushroom.data")
+table(mushroom$p)
+```
+
+```{r}
+# Split Data into 67% Training Set and 33% Testing Set 
+data <- sample(2, nrow(mushroom), replace=TRUE, prob = c(0.67,0.33))
+trainD <- mushroom[data==1,]
+testD <- mushroom[data==2,]
+nrow(trainD)
+nrow(testD)
+
+```
+
+```{r}
+#probability of edible and poisionous mushroom
+prop.table(table(trainD$p))
+prop.table(table(testD$p))
+```
+
+```{r}
+library(e1071)
+library(rminer)
+```
+
+```{r}
+#model using Naive Baye's function in e1071
+e1071model <- naiveBayes(p ~ .,data=trainD)
+e1071model
+```
+
+```{r}
+e1071prediction <- predict(e1071model, testD)
+mmetric(testD$p, e1071prediction, c("ACC","PRECISION","TPR","F1"))
+
+
+```
+
+```{r}
+# poisonous mushrooms are less in number than edible mushrooms
+table(e1071prediction)
+```
+
+
+
+
+
